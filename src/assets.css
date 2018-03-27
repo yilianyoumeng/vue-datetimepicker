@@ -1,0 +1,25 @@
+.afterJiao {
+  content: '';
+  width: 0.33333333rem;
+  height: 0.33333333rem;
+  border-top: 0.06666667rem solid #ddd;
+  border-right: 0.06666667rem solid #ddd;
+  transform: rotate(45deg);
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+  line-height: normal;
+}
+body {
+  background-color: #fff;
+}
+html {
+  background-color: #fff;
+}
