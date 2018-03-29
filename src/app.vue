@@ -1,11 +1,11 @@
 <template>
-  <pdSelect></pdSelect>
+  <pd></pd>
 </template>
 <script>
-  import pdSelect from './components/pdSelect.vue'
+  import pd from './components/pd.vue'
   export default {
     components: {
-      pdSelect
+      pd
     }
   }
 </script>
