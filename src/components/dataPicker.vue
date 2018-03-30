@@ -1,5 +1,6 @@
 <template>
 	<div>
+    <input type="text" v-model="dataVal">
 		<!--年月日-->
 		<div class="date_ctrl slideInUp" ref="date_ctrl">
 			<div class="date_btn_box">
@@ -111,16 +112,17 @@ import "../dataPicker.less";
 export default {
   data() {
     return {
-      minY: 1900,
+      dataVal:'',//日期时间的值
+      minY: 2011,
       minM: 1,
       minD: 1,
-      maxY: 2099,
+      maxY: 2019,
       maxM: 12,
       maxD: 31,
       passY: 0,
-      top_yy: "",
-      top_mm: "",
-      top_dd: "",
+      top_yy: 0,
+      top_mm: 0,
+      top_dd: 0,
       yy_itemStr: "",
       mm_itemStr: "",
       dd_itemStr: "",
@@ -129,7 +131,7 @@ export default {
         mm: new Date().getMonth(),
         dd: new Date().getDate() - 1,
         hh: new Date().getHours(),
-        mm: new Date().getMinutes()
+        mi: new Date().getMinutes()
 			},
 			finger:{}
     };
@@ -148,31 +150,7 @@ export default {
   methods: {
     dateTimeCtrlInit: function() {
       var that = this;
-      var date = new Date();
-      that.dateArr = {
-        yy: date.getYear(),
-        mm: date.getMonth(),
-        dd: date.getDate() - 1,
-        hh: date.getHours(),
-        mi: date.getMinutes()
-      };
-      // if (/^\d{4}-\d{1,2}-\d{1,2}\s\d{2}:\d{2}$/.test(that.trigger.value)) {
-      // 	rs = that.trigger.value.match(/(^|-|\s|:)\d{1,4}/g);
-      // 	that.dateArr.yy = rs[0] - that.minY;
-      // 	that.dateArr.mm = rs[1].replace(/-/g, "") - 1;
-      // 	that.dateArr.dd = rs[2].replace(/-/g, "") - 1;
-      // 	that.dateArr.hh = parseInt(rs[3].replace(/\s0?/g, ""));
-      // 	that.dateArr.mi = parseInt(rs[4].replace(/:0?/g, ""));
-      // } else {
-      // 	that.dateArr.yy = that.dateArr.yy + 1900 - that.minY;
-      // }
-      // that.gearDate.querySelector(".date_yy").setAttribute("val", dateArr.yy);
-      // that.gearDate.querySelector(".date_mm").setAttribute("val", dateArr.mm);
-      // that.gearDate.querySelector(".date_dd").setAttribute("val", dateArr.dd);
-      this.setDateGearTooth();
-      // that.gearDate.querySelector(".time_hh").setAttribute("val", dateArr.hh);
-      // that.gearDate.querySelector(".time_mm").setAttribute("val", dateArr.mi);
-      // setTimeGearTooth();
+      that.setDateGearTooth();
     },
     setDateGearTooth: function() {
       var that = this;
@@ -181,35 +159,17 @@ export default {
       var itemStr = "";
       //if (date_yy && date_yy.getAttribute("val")) {
       //得到年份的值
-      var yyVal = parseInt(that.dateArr.yy);
+      var yyVal = parseInt(that.dateArr.yy);//2018
       //p 当前节点前后需要展示的节点个数
       for (var p = 0; p <= that.passY - 1; p++) {
         itemStr += "<div class='tooth'>" + (that.minY + p) + "</div>";
       }
       that.yy_itemStr = itemStr;
-      var top = Math.floor(parseFloat(that.top_yy));
-      if (!isNaN(top)) {
-        top % 2 == 0 ? (top = top) : (top = top + 1);
-        top > 8 && (top = 8);
-        var minTop = 8 - (that.passY - 1) * 2;
-        top < that.minTop && (top = that.minTop);
-        //that.date_yy.style["-webkit-transform"] = 'translate3d(0,' + top + 'em,0)';
-        that.top_yy = top + "em";
-        //that.date_yy.setAttribute('top', top + 'em');
 
-        yyVal = Math.abs(top - 8) / 2;
-        //that.date_yy.setAttribute("val", yyVal);
-        that.dateArr.yy = yyVal;
-      } else {
-        that.top_yy = 8 - yyVal * 2 + "em";
-        //date_yy.style["-webkit-transform"] = 'translate3d(0,' + (8 - yyVal * 2) + 'em,0)';
-        // date_yy.setAttribute('top', 8 - yyVal * 2 + 'em');
-      }
-      //} else {
-      //	return;
-      //}
-      //var date_mm = that.gearDate.querySelector(".date_mm");
-      //if (date_mm && date_mm.getAttribute("val")) {
+      var top = Math.floor(parseFloat(that.top_yy));
+      console.log('top###');
+      console.log(top);
+      that.top_yy = 8 - (yyVal - that.minY) * 2 + "em";
       itemStr = "";
       //得到月份的值
       var mmVal = parseInt(that.dateArr.mm);
@@ -305,26 +265,33 @@ export default {
     },
 		//触摸开始
     gearTouchStart:function(event) {
+      console.log('触摸开始');
       let finger = event.changedTouches[0];
       this.finger.startY = finger.pageY;
+      console.log(this.finger.startY);
       this.finger.startTime = event.timestamp || Date.now();
       //this.finger.transformY = this.$refs.list.getAttribute("scroll");
       event.preventDefault();
 		},
 		//手指移动
     gearTouchMove:function(event) {
+      console.log('手指移动');
 			var finger = event.changedTouches[0];
       this.finger.lastY = finger.pageY;
       this.finger.lastTime = event.timestamp || Date.now();
       /* 设置css */
-			let move = this.finger.lastY - this.finger.startY;
+      let move = this.finger.lastY - this.finger.startY;
+      console.log(move)
+      var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl).fontSize);      
       this.setStyle(move);
       event.preventDefault();
 		},
 		//离开屏幕
     gearTouchEnd:function(event) {
+      console.log('离开屏幕');
       let finger = event.changedTouches[0];
       this.finger.lastY = finger.pageY;
+      console.log(this.finger.lastY);
       this.finger.lastTime = event.timestamp || Date.now();
 
       let move = this.finger.lastY - this.finger.startY;
@@ -337,29 +304,45 @@ export default {
       /* 减速加速度a */
       let a = 1.8;
       /* 设置css */
-      if (time <= 300) {
-        move = v * a * time;
-        time = 1000 + time * a;
-				this.setStyle(move, "end", time);
-      } else {
-        this.setStyle(move, "end");
-      }
-
+      // if (time <= 300) {
+      //   move = v * a * time;
+      //   time = 1000 + time * a;
+			// 	this.setStyle(move, "end", time);
+      // } else {
+      //   this.setStyle(move, "end");
+      // }
       //传值给父组件
       //this.$emit('valueChange', id);
+      //this.finger.startY = this.finger.lastY;
 		},
 		setStyle:function(move, type, time){
 			var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl).fontSize);
-			console.log(fontS);
-			move=parseFloat(move/fontS);
-			console.log('move@@@@@');
-			console.log(move);
-			//if(type=='end'){
-				this.top_yy=parseInt(this.top_yy.replace('em',''));
-				this.top_yy=(move+this.top_yy)+'em';
-				console.log('top_yy#####')
-				//console.log(this.top_yy)
-			//}
+			move=Math.ceil(move/fontS);
+      var maxHeight=(this.maxY-this.minY);
+      var top_yy=Math.ceil((this.top_yy).replace('em',''));
+      
+      if(top_yy>-maxHeight&&top_yy<maxHeight){
+				this.top_yy=(move+top_yy)+'em';
+      }else if(top_yy<-maxHeight){
+        this.top_yy=-maxHeight+'em';
+      }else if(top_yy>maxHeight){
+        this.top_yy=maxHeight+'em';
+      }else if(top_yy==-maxHeight){
+        if((move+top_yy)>-maxHeight){
+          this.top_yy=(move+top_yy)+'em';
+        }else{
+          this.top_yy=-maxHeight+'em';
+        }
+      }else if(top_yy==maxHeight){
+        
+        if((move+top_yy)<maxHeight){
+          console.log('2010')
+          console.log(move);
+          this.top_yy=-(move+top_yy)+'em';
+        }else{
+          this.top_yy=maxHeight+'em';
+        }
+      }
 		},
 		
   }
