@@ -2,14 +2,14 @@
 	<div>
     <input type="text" v-model="dataVal">
 		<!--年月日-->
-		<div class="date_ctrl slideInUp" ref="date_ctrl">
+		<div class="date_ctrl slideInUp">
 			<div class="date_btn_box">
 				<div class="date_btn lcalendar_cancel">取消</div>
 				<div class="date_btn lcalendar_finish">确定</div>
 			</div>
 			<div class="date_roll_mask">
 				<div class="date_roll">
-					<div>
+					<div  ref="date_ctrl_div">
 						<div class="gear date_yy" data-datetype="date_yy" :val="dateArr.yy" :top="top_yy" :style="'-webkit-transform :translate3d(0,' + top_yy + ',0)'" v-html="yy_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd" ref="yy"><!---->
 						</div>
 						<div class="date_grid">
@@ -167,8 +167,6 @@ export default {
       that.yy_itemStr = itemStr;
 
       var top = Math.floor(parseFloat(that.top_yy));
-      console.log('top###');
-      console.log(top);
       that.top_yy = 8 - (yyVal - that.minY) * 2 + "em";
       itemStr = "";
       //得到月份的值
@@ -268,7 +266,6 @@ export default {
       console.log('触摸开始');
       let finger = event.changedTouches[0];
       this.finger.startY = finger.pageY;
-      console.log(this.finger.startY);
       this.finger.startTime = event.timestamp || Date.now();
       //this.finger.transformY = this.$refs.list.getAttribute("scroll");
       event.preventDefault();
@@ -281,9 +278,10 @@ export default {
       this.finger.lastTime = event.timestamp || Date.now();
       /* 设置css */
       let move = this.finger.lastY - this.finger.startY;
-      console.log(move)
-      var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl).fontSize);      
+      //console.log(move)
+      var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl_div).fontSize);      
       this.setStyle(move);
+      console.log(this.top_yy);
       event.preventDefault();
 		},
 		//离开屏幕
@@ -291,7 +289,6 @@ export default {
       console.log('离开屏幕');
       let finger = event.changedTouches[0];
       this.finger.lastY = finger.pageY;
-      console.log(this.finger.lastY);
       this.finger.lastTime = event.timestamp || Date.now();
 
       let move = this.finger.lastY - this.finger.startY;
@@ -299,51 +296,70 @@ export default {
       /* 速度计算说明
          * 当时间小于300毫秒 最后的移动距离等于 move + 减速运动距离
          * */
+      
       let time = this.finger.lastTime - this.finger.startTime;
+      console.log(time)
       let v = move / time;
       /* 减速加速度a */
       let a = 1.8;
       /* 设置css */
-      // if (time <= 300) {
-      //   move = v * a * time;
-      //   time = 1000 + time * a;
-			// 	this.setStyle(move, "end", time);
-      // } else {
-      //   this.setStyle(move, "end");
-      // }
+      if (time <= 300) {
+        move = v * a * time;
+        time = 1000 + time * a;
+				this.setStyle(move, "end", time);
+      } else {
+        this.setStyle(move, "end");
+      }
       //传值给父组件
       //this.$emit('valueChange', id);
-      //this.finger.startY = this.finger.lastY;
 		},
 		setStyle:function(move, type, time){
-			var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl).fontSize);
+			var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl_div).fontSize);
 			move=Math.ceil(move/fontS);
       var maxHeight=(this.maxY-this.minY);
       var top_yy=Math.ceil((this.top_yy).replace('em',''));
-      
-      if(top_yy>-maxHeight&&top_yy<maxHeight){
-				this.top_yy=(move+top_yy)+'em';
-      }else if(top_yy<-maxHeight){
-        this.top_yy=-maxHeight+'em';
-      }else if(top_yy>maxHeight){
-        this.top_yy=maxHeight+'em';
-      }else if(top_yy==-maxHeight){
-        if((move+top_yy)>-maxHeight){
-          this.top_yy=(move+top_yy)+'em';
+      if(type=='end'){
+        if(Math.abs(top_yy)>=maxHeight){
+          if(top_yy>0){
+            this.top_yy=maxHeight+'em';
+          }else{
+            this.top_yy=-maxHeight+'em';
+          }
+          
         }else{
-          this.top_yy=-maxHeight+'em';
+          if(top_yy%2!=0){
+            top_yy=top_yy+1;
+            this.top_yy=top_yy+'em';
+          }
         }
-      }else if(top_yy==maxHeight){
         
-        if((move+top_yy)<maxHeight){
-          console.log('2010')
-          console.log(move);
-          this.top_yy=-(move+top_yy)+'em';
-        }else{
+      }else{
+        if(top_yy>-maxHeight&&top_yy<maxHeight){
+          this.top_yy=(move+top_yy)+'em';
+        }else if(top_yy<-maxHeight){
+          this.top_yy=-maxHeight+'em';
+        }else if(top_yy>maxHeight){
           this.top_yy=maxHeight+'em';
+        }else if(top_yy==-maxHeight){
+          if((move+top_yy)>-maxHeight){
+            this.top_yy=(move+top_yy)+'em';
+          }else{
+            this.top_yy=-maxHeight+'em';
+          }
+        }else if(top_yy==maxHeight){
+          if((move+top_yy)<maxHeight){
+            this.top_yy=(move+top_yy)+'em';
+          }else{
+            this.top_yy=maxHeight+'em';
+          }
         }
       }
-		},
+      
+    },
+    //缓速运动
+    rollGear:function(move,time=1000){
+      
+    }
 		
   }
 };
