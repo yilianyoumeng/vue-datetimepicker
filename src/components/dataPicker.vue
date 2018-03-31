@@ -266,6 +266,7 @@ export default {
       console.log('触摸开始');
       let finger = event.changedTouches[0];
       this.finger.startY = finger.pageY;
+      this.finger.lastY= finger.pageY;
       this.finger.startTime = event.timestamp || Date.now();
       //this.finger.transformY = this.$refs.list.getAttribute("scroll");
       event.preventDefault();
@@ -273,15 +274,13 @@ export default {
 		//手指移动
     gearTouchMove:function(event) {
       console.log('手指移动');
-			var finger = event.changedTouches[0];
-      this.finger.lastY = finger.pageY;
+      var finger = event.changedTouches[0];
       this.finger.lastTime = event.timestamp || Date.now();
       /* 设置css */
-      let move = this.finger.lastY - this.finger.startY;
-      //console.log(move)
-      var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl_div).fontSize);      
+      let move = finger.pageY - this.finger.lastY ;
+      this.finger.lastY = finger.pageY;
+      //var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl_div).fontSize);      
       this.setStyle(move);
-      console.log(this.top_yy);
       event.preventDefault();
 		},
 		//离开屏幕
@@ -314,10 +313,14 @@ export default {
       //this.$emit('valueChange', id);
 		},
 		setStyle:function(move, type, time){
+      console.log(move);
 			var fontS=parseInt(window.getComputedStyle(this.$refs.date_ctrl_div).fontSize);
-			move=Math.ceil(move/fontS);
+      //move=Math.ceil(move/fontS);
+      move=move/fontS;
+      console.log('@@@move');
+      console.log(move);
       var maxHeight=(this.maxY-this.minY);
-      var top_yy=Math.ceil((this.top_yy).replace('em',''));
+      var top_yy=parseFloat(this.top_yy.replace('em',''));
       if(type=='end'){
         if(Math.abs(top_yy)>=maxHeight){
           if(top_yy>0){
@@ -325,14 +328,13 @@ export default {
           }else{
             this.top_yy=-maxHeight+'em';
           }
-          
         }else{
+          top_yy=Math.ceil(top_yy);
           if(top_yy%2!=0){
             top_yy=top_yy+1;
-            this.top_yy=top_yy+'em';
           }
+          this.top_yy=top_yy+'em';
         }
-        
       }else{
         if(top_yy>-maxHeight&&top_yy<maxHeight){
           this.top_yy=(move+top_yy)+'em';
