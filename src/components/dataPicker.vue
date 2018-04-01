@@ -1,6 +1,5 @@
 <template>
 	<div>
-    <input type="text" v-model="dataVal">
 		<!--年月日-->
 		<div class="date_ctrl slideInUp">
 			<div class="date_btn_box">
@@ -356,13 +355,14 @@ export default {
           }
         }
       }
-      
-    },
-    //缓速运动
-    rollGear:function(move,time=1000){
-      
+      var array=[]; 
+      var i=0;    
+      for(var k=this.maxY;k >= this.minY;k--){
+          array.push(k);
+      }
+      i=(top_yy+maxHeight)/2;
+      this.dateArr.yy=array[i];
     }
-		
   }
 };
 </script>
