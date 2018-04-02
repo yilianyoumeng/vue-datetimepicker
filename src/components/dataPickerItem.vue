@@ -20,12 +20,12 @@ export default {
   data() {
     return {
       dataVal: "", //日期时间的值
-      minY: 2000,
-      minM: 1,
-      minD: 1,
-      maxY: 2018,
-      maxM: 12,
-      maxD: 31,
+      // minY: 2000,
+      // minM: 1,
+      // minD: 1,
+      // maxY: 2018,
+      // maxM: 12,
+      // maxD: 31,
       passY: 0,
       top_val: "0em",
       top_mm: 0,
@@ -64,39 +64,53 @@ export default {
     },
     addTopD:{
       default:0
-    }
+    },
+    timestamp:{
+      default:0
+    },
+    minY: {
+      default:2000
+    },
+    minM: {
+      default:1
+    },
+    minD: {
+      default:1
+    },
+    maxY: {
+      default:2018
+    },
+    maxM: {
+      default:12
+    },
+    maxD: {
+      default:31
+    },
     // placeholder: {
     //   default: ""
     // },
   },
   watch:{
     maxD:function(){
-      console.log(this.type);
       var top_val = parseFloat(this.top_val.replace("em", ""));
-      console.log('@@@@@@');
-      //console.log(month);
-      console.log(this.maxD);
       var day;
-      console.log(this.day);
       if(this.day==0){
         day=this.dateArr.dd;
       }else{
         day=this.day;
       }
-      console.log(day);
+      var timestamp = (new Date()).valueOf();
       if(this.maxD<day){
         if(this.type=='yy'||this.type=='mm'){
           this.dateArr.dd=this.maxD;
           var top_val_add_d=(day-this.maxD)*2
-          this.$emit('getTopD',[this.dateArr.dd,top_val_add_d]);//天的val和增加的高度
+          this.$emit('getTopD',[this.dateArr.dd,top_val_add_d,timestamp]);//天的val和增加的高度
         }
       }
     },
-    addTopD:function(){
-      console.log(this.type);
+    timestamp:function(){//时间戳变化则代表是新的月份对应日期
       if(this.type=='dd'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
-        console.log('天儿！');
         this.top_val=(top_val+this.addTopD)+'em';
         this.dateArr.dd=this.topValD;
       }
@@ -153,7 +167,6 @@ export default {
           mmVal = maxM;
           that.dateArr.mm = mmVal;
         }
-        console.log((mmVal - minM) * 2)
         that.top_val = 8 - (mmVal - minM) * 2 + "em";
       } else if (this.type == "dd") {
         itemStr = "";
@@ -229,7 +242,6 @@ export default {
     },
     //离开屏幕
     gearTouchEnd: function(event) {
-      console.log("离开屏幕");
       let finger = event.changedTouches[0];
       this.finger.lastY = finger.pageY;
       this.finger.lastTime = event.timestamp || Date.now();
@@ -260,7 +272,6 @@ export default {
       }else if(this.type=='dd'){
         this.$emit('getVal',this.dateArr.dd);
       }
-      console.log(this.maxD);
     },
     
     setStyle: function(move, type, time) {
@@ -352,10 +363,7 @@ export default {
         month=this.month;
       }
       var maxMonthDays = this.calcDays(year,month);
-      this.maxD=maxMonthDays;
-      console.log('月份最大天数');
-      console.log(month);
-      console.log(this.maxD);  
+      this.maxD=maxMonthDays; 
     }
   }
 };

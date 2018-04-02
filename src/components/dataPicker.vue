@@ -10,14 +10,13 @@
 				<div class="date_roll">
           <data-pickerItem itemUnit='年' type="yy" @getVal="getYear" @getTopD="getTopD" :month="month" :day="day"></data-pickerItem>
           <data-pickerItem itemUnit='月' type="mm" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day"></data-pickerItem>
-          <data-pickerItem itemUnit='日' type="dd" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD"></data-pickerItem>
+          <data-pickerItem itemUnit='日' type="dd" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestamp="timestamp"></data-pickerItem>
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
 <script>
-// import "../dataPicker.less";
 import dataPickerItem from './dataPickerItem.vue';
 export default {
   components: {
@@ -29,16 +28,29 @@ export default {
       month:-1,
       day:0,
       topValD:0,
-      addTopD:0
+      addTopD:0,
+      timestamp:0
     };
   },
   props: {
-    // isSelectItem: {
-    //   default: false
-    // },
-    // placeholder: {
-    //   default: ""
-    // },
+    minY: {
+      default:2000
+    },
+    minM: {
+      default:1
+    },
+    minD: {
+      default:1
+    },
+    maxY: {
+      default:2018
+    },
+    maxM: {
+      default:12
+    },
+    maxD: {
+      default:31
+    },
   },
   methods: {
     getYear:function(val){
@@ -51,9 +63,12 @@ export default {
       this.day=val;
     },
     getTopD:function(val){
-      console.log(val);
-      this.topValD=val[0];
-      this.addTopD=val[1];
+      if(val!=undefined){
+        this.topValD=val[0];
+        this.addTopD=val[1];
+        this.timestamp=val[2];
+      }
+      
     }
   }
 };
