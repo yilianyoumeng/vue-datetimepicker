@@ -8,9 +8,9 @@
 			</div>
 			<div class="date_roll_mask">
 				<div class="date_roll">
-          <data-pickerItem itemUnit='年' type="yy" @getVal="getYear" @getTopD="getTopD" :month="month" :day="day"></data-pickerItem>
-          <data-pickerItem itemUnit='月' type="mm" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day"></data-pickerItem>
-          <data-pickerItem itemUnit='日' type="dd" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestamp="timestamp"></data-pickerItem>
+          <data-pickerItem itemUnit='年' type="yy" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></data-pickerItem>
+          <data-pickerItem itemUnit='月' type="mm" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></data-pickerItem>
+          <data-pickerItem itemUnit='日' type="dd" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></data-pickerItem>
 				</div>
 			</div>
 		</div>
@@ -29,7 +29,10 @@ export default {
       day:0,
       topValD:0,
       addTopD:0,
-      timestamp:0
+      timestampD:0,
+      topValM:0,
+      addTopM:0,
+      timestampM:0
     };
   },
   props: {
@@ -63,10 +66,21 @@ export default {
       this.day=val;
     },
     getTopD:function(val){
+      console.log('zheli??')
       if(val!=undefined){
         this.topValD=val[0];
         this.addTopD=val[1];
-        this.timestamp=val[2];
+        this.timestampD=val[2];
+      }
+      
+    },
+    getTopM:function(val){
+      console.log(111);
+      console.log(val);
+      if(val!=undefined){
+        this.topValM=val[0];
+        this.addTopM=val[1];
+        this.timestampM=val[2];
       }
       
     }

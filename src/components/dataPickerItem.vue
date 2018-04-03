@@ -20,12 +20,13 @@ export default {
   data() {
     return {
       dataVal: "", //日期时间的值
-      // minY: 2000,
-      // minM: 1,
-      // minD: 1,
-      // maxY: 2018,
-      // maxM: 12,
-      // maxD: 31,
+      minY: this.minDate.yy,
+      minM: 1,
+      minD: 1,
+      maxY: this.maxDate.yy,
+      maxM: 12,
+      maxD: 31,
+      
       passY: 0,
       top_val: "0em",
       top_mm: 0,
@@ -65,36 +66,43 @@ export default {
     addTopD:{
       default:0
     },
-    timestamp:{
+    timestampD:{
+      default:0
+    }, 
+    topValM:{
+      default:-1
+    },
+    addTopM:{
       default:0
     },
-    minY: {
-      default:2000
+    timestampM:{
+      default:0
     },
-    minM: {
-      default:1
+    maxDate:{
+      default:function(){
+        return{
+          yy:2020,
+          mm:1,//2月
+          dd:1
+        }
+        
+      }
     },
-    minD: {
-      default:1
-    },
-    maxY: {
-      default:2018
-    },
-    maxM: {
-      default:12
-    },
-    maxD: {
-      default:31
-    },
-    // placeholder: {
-    //   default: ""
-    // },
+    minDate:{
+      default:function(){
+        return{
+          yy:2018,
+          mm:3,
+          dd:1
+        }
+      }
+    }
   },
   watch:{
     maxD:function(){
       var top_val = parseFloat(this.top_val.replace("em", ""));
       var day;
-      if(this.day==0){
+      if(this.day==0||this.type=='dd'){
         day=this.dateArr.dd;
       }else{
         day=this.day;
@@ -103,18 +111,45 @@ export default {
       if(this.maxD<day){
         if(this.type=='yy'||this.type=='mm'){
           this.dateArr.dd=this.maxD;
-          var top_val_add_d=(day-this.maxD)*2
+          var top_val_add_d=(day-this.maxD)*2;
           this.$emit('getTopD',[this.dateArr.dd,top_val_add_d,timestamp]);//天的val和增加的高度
         }
       }
     },
-    timestamp:function(){//时间戳变化则代表是新的月份对应日期
+    timestampD:function(){//时间戳变化则代表是新的月份对应日期
       if(this.type=='dd'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
         this.top_val=(top_val+this.addTopD)+'em';
         this.dateArr.dd=this.topValD;
+        this.maxD=this.topValD;
+        this.$emit('getVal',this.dateArr.dd);
       }
-    }
+    },
+    maxM:function(){
+      var month;
+      if(this.month==-1||this.type=='mm'){
+          month=this.dateArr.mm;
+      }else{
+        month=this.month;
+      }
+      var timestamp = (new Date()).valueOf();
+      if(this.maxM-1<month){
+        if(this.type=='yy'){
+          this.dateArr.mm=this.maxM-1;
+          var top_val_add_m=(month-(this.maxM-1))*2;
+          this.$emit('getTopM',[this.dateArr.mm,top_val_add_m,timestamp])
+        }
+      }
+    },
+    timestampM:function(){//时间戳变化则代表是新的月份对应日期
+      if(this.type=='mm'){
+        var top_val = parseFloat(this.top_val.replace("em", ""));
+        this.top_val=(top_val+this.addTopM)+'em';
+        this.dateArr.mm=this.topValM;
+        this.maxM=this.topValM+1;
+        this.$emit('getVal',this.dateArr.mm);
+      }
+    },
   },
   mounted() {
     this.dateTimeCtrlInit();
@@ -273,7 +308,6 @@ export default {
         this.$emit('getVal',this.dateArr.dd);
       }
     },
-    
     setStyle: function(move, type, time) {
       var fontS = parseInt(
         window.getComputedStyle(this.$refs.date_ctrl_div).fontSize
@@ -348,25 +382,58 @@ export default {
         i = Math.abs(top_val - heightMax) / 2;
         this.dateArr.dd = array[i];
       }
-      //月份对应天数
+      
+      //日期最大值
       var year;
       var month;
       
-      if(this.year==0){
+      if(this.year==0||this.type=='yy'){
         year=this.dateArr.yy;
       }else{
         year=this.year;
       }
-      if(this.month==-1){
+      if(this.month==-1||this.type=='mm'){
         month=this.dateArr.mm;
       }else{
         month=this.month;
       }
-      var maxMonthDays = this.calcDays(year,month);
-      this.maxD=maxMonthDays; 
+
+      if(this.type=="yy"){
+        if(year==this.maxDate.yy){//年是最大年限
+          this.maxM=this.maxDate.mm+1;
+          if(month==this.maxDate.mm){
+            this.maxD=this.maxDate.dd;
+          }else{
+            var maxMonthDays = this.calcDays(year,month);
+            this.maxD=maxMonthDays; 
+          }
+        }else{
+          var maxMonthDays = this.calcDays(year,month);
+          this.maxD=maxMonthDays; 
+        }
+      }
+      if(this.type=='mm'){
+        if(year==this.maxDate.yy&&month==this.maxDate.mm){
+          this.maxD=this.maxDate.dd;
+        }else{
+          var maxMonthDays = this.calcDays(year,month);
+          this.maxD=maxMonthDays; 
+        }
+      }
+      if(this.type=="dd"){
+        console.log(year+'年'+this.maxY);
+        console.log(month+'月'+this.maxDate.mm);
+        if(year==this.maxDate.yy&&month==this.maxDate.mm){
+          console.log('这里');
+          this.maxD=this.maxDate.dd;
+        }else{
+          var maxMonthDays = this.calcDays(year,month);
+          this.maxD=maxMonthDays; 
+        }
+      }
     }
   }
-};
+}
 </script>
 
 
