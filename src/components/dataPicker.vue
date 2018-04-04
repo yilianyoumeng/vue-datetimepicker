@@ -4,7 +4,7 @@
 		<div class="date_ctrl slideInUp">
 			<div class="date_btn_box">
 				<div class="date_btn lcalendar_cancel">取消</div>
-				<div class="date_btn lcalendar_finish">确定</div>
+				<div class="date_btn lcalendar_finish" @click="yesFn">确定</div>
 			</div>
 			<div class="date_roll_mask">
 				<div class="date_roll">
@@ -66,7 +66,6 @@ export default {
       this.day=val;
     },
     getTopD:function(val){
-      console.log('zheli??')
       if(val!=undefined){
         this.topValD=val[0];
         this.addTopD=val[1];
@@ -75,14 +74,25 @@ export default {
       
     },
     getTopM:function(val){
-      console.log(111);
-      console.log(val);
       if(val!=undefined){
         this.topValM=val[0];
         this.addTopM=val[1];
         this.timestampM=val[2];
       }
       
+    },
+    //点击确定
+    yesFn:function(){
+      if(this.year==0){
+        this.year=new Date().getFullYear();
+      }
+      if(this.month==-1){
+        this.month=new Date().getMonth();
+      }
+      if(this.day==0){
+        this.day=new Date().getDate();
+      }
+      this.$emit('getVal',{year:this.year,month:this.month,day:this.day})
     }
   }
 };

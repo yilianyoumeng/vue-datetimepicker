@@ -83,7 +83,7 @@ export default {
         return{
           yy:2020,
           mm:1,//2月
-          dd:1
+          dd:3
         }
         
       }
@@ -91,8 +91,8 @@ export default {
     minDate:{
       default:function(){
         return{
-          yy:2018,
-          mm:3,
+          yy:2017,
+          mm:2,//3月
           dd:1
         }
       }
@@ -116,6 +116,23 @@ export default {
         }
       }
     },
+    minD:function(){
+      var top_val = parseFloat(this.top_val.replace("em", ""));
+      var day;
+      if(this.day==0||this.type=='dd'){
+        day=this.dateArr.dd;
+      }else{
+        day=this.day;
+      }
+      var timestamp = (new Date()).valueOf();
+      if(this.minD>day){
+        if(this.type=='yy'||this.type=='mm'){
+          this.dateArr.dd=this.minD;
+          var top_val_add_d=(day-this.minD)*2;
+          this.$emit('getTopD',[this.dateArr.dd,top_val_add_d,timestamp]);//天的val和增加的高度
+        }
+      }
+    },
     timestampD:function(){//时间戳变化则代表是新的月份对应日期
       if(this.type=='dd'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
@@ -126,6 +143,7 @@ export default {
       }
     },
     maxM:function(){
+      console.log('maxM你变了');
       var month;
       if(this.month==-1||this.type=='mm'){
           month=this.dateArr.mm;
@@ -141,12 +159,33 @@ export default {
         }
       }
     },
+    minM:function(){
+      console.log('minM你变了')
+      var month;
+      if(this.month==-1||this.type=='mm'){
+          month=this.dateArr.mm;
+      }else{
+        month=this.month;
+      }
+      var timestamp = (new Date()).valueOf();
+      if(this.minM-1>month){
+        if(this.type=='yy'){
+          this.dateArr.mm=this.minM-1;
+          var top_val_add_m=(month-(this.minM-1))*2;
+          this.$emit('getTopM',[this.dateArr.mm,top_val_add_m,timestamp])
+        }
+      }
+    },
     timestampM:function(){//时间戳变化则代表是新的月份对应日期
       if(this.type=='mm'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
         this.top_val=(top_val+this.addTopM)+'em';
         this.dateArr.mm=this.topValM;
-        this.maxM=this.topValM+1;
+        if(this.addTopM>0){
+          this.maxM=this.topValM+1;
+        }else{
+          this.minM=this.topValM+1;
+        }
         this.$emit('getVal',this.dateArr.mm);
       }
     },
@@ -185,10 +224,12 @@ export default {
         //当年份到达最大值
         if (yyVal == that.passY - 1) {
           maxM = that.maxM - 1;
+          //maxM = that.maxDate.mm - 1;
         }
         //当年份到达最小值
         if (yyVal == 0) {
           minM = that.minM - 1;
+          //minM = that.minDate.mm - 1;
         }
         //p 当前节点前后需要展示的节点个数
         for (var p = 0; p < maxM - minM+1; p++) {
@@ -321,9 +362,11 @@ export default {
       if (this.type == "yy") {
         heightMin = 8-(this.maxY - this.minY)*2;
       } else if (this.type == "mm") {
-        heightMin = 8-(this.maxM - this.minM)*2;
+        heightMin = heightMax-(this.maxM-1)*2;
+        heightMax = 8-(this.minM-1)*2;
       }else if(this.type == "dd"){
-        heightMin = 8-(this.maxD - this.minD)*2;
+        heightMin = heightMax-(this.maxD-1)*2;
+        heightMax = 8-(this.minD-1)*2;
       }
 
       //set top_val
@@ -346,17 +389,24 @@ export default {
         } else if (top_val < heightMin) {
           this.top_val = heightMin + "em";
         } else if (top_val > heightMax) {
+         
           this.top_val = heightMax + "em";
         } else if (top_val == heightMin) {
+          
           if (move + top_val > heightMin) {
+            
             this.top_val = move + top_val + "em";
           } else {
+            
             this.top_val = heightMin + "em";
           }
         } else if (top_val == heightMax) {
+          
           if (move + top_val < heightMax) {
+            
             this.top_val = move + top_val + "em";
           } else {
+            
             this.top_val = heightMax + "em";
           }
         }
@@ -383,9 +433,10 @@ export default {
         this.dateArr.dd = array[i];
       }
       
-      //日期最大值
+      //日期最大最小值
       var year;
       var month;
+      var day;
       
       if(this.year==0||this.type=='yy'){
         year=this.dateArr.yy;
@@ -397,40 +448,84 @@ export default {
       }else{
         month=this.month;
       }
+      if(this.day==0||this.type=='dd'){
+        day=this.dateArr.dd;
+      }else{
+        day=this.day;
+      }
+
 
       if(this.type=="yy"){
         if(year==this.maxDate.yy){//年是最大年限
           this.maxM=this.maxDate.mm+1;
+          this.minD=1;
           if(month==this.maxDate.mm){
             this.maxD=this.maxDate.dd;
           }else{
             var maxMonthDays = this.calcDays(year,month);
             this.maxD=maxMonthDays; 
           }
+        }else if(year==this.minDate.yy){//年是最小年限
+          this.minM=this.minDate.mm+1;
+          this.maxM=12;
+          if(this.minM!=this.dateArr.mm){
+              var timestamp = (new Date()).valueOf();
+              this.dateArr.mm=this.minM-1;
+              var top_val_add_m=(month-this.minM+1)*2;
+              this.$emit('getTopM',[this.dateArr.mm,top_val_add_m,timestamp]);//天的val和增加的高度
+            }
+          if(month==this.minDate.mm){
+            this.minD=this.minDate.dd;
+            if(this.minD!=this.dateArr.dd){
+              var timestamp = (new Date()).valueOf();
+              this.dateArr.dd=this.minD;
+              var top_val_add_d=(day-this.minD)*2;
+              this.$emit('getTopD',[this.dateArr.dd,top_val_add_d,timestamp]);//天的val和增加的高度
+            }
+          }
         }else{
+          this.maxM=12;
+          this.minM=1;
           var maxMonthDays = this.calcDays(year,month);
           this.maxD=maxMonthDays; 
         }
       }
       if(this.type=='mm'){
-        if(year==this.maxDate.yy&&month==this.maxDate.mm){
-          this.maxD=this.maxDate.dd;
+        if(year==this.maxDate.yy){//年是最大年限
+          this.maxM=this.maxDate.mm+1;
+          this.minM=1;
+          if(month==this.maxDate.mm){
+            this.maxD=this.maxDate.dd;
+          }else{
+            var maxMonthDays = this.calcDays(year,month);
+            this.maxD=maxMonthDays; 
+          }
+        }else if(year==this.minDate.yy){//年是最小年限
+          this.maxM=12;
+          this.minM=this.minDate.mm+1;
+          if(month==this.minDate.mm){
+            this.minD=this.minDate.dd;
+          }
         }else{
+          this.maxM=12;
+          this.minM=1;
           var maxMonthDays = this.calcDays(year,month);
           this.maxD=maxMonthDays; 
         }
       }
       if(this.type=="dd"){
-        console.log(year+'年'+this.maxY);
-        console.log(month+'月'+this.maxDate.mm);
         if(year==this.maxDate.yy&&month==this.maxDate.mm){
-          console.log('这里');
           this.maxD=this.maxDate.dd;
+        }else if(year==this.minDate.yy&&month==this.minDate.mm){
+          this.minD=this.minDate.dd;
+          var maxMonthDays = this.calcDays(year,month);
+          this.maxD=maxMonthDays; 
         }else{
           var maxMonthDays = this.calcDays(year,month);
           this.maxD=maxMonthDays; 
         }
       }
+      
     }
   }
 }

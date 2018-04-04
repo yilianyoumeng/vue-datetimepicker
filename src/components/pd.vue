@@ -2,7 +2,8 @@
   <div class="formBox">
     <div class="input_box" >
       <div class="label_div">选择原因</div>
-      <data-picker></data-picker>
+      <input type="text" v-model="pickerVal">
+      <data-picker @getVal='getVal'></data-picker>
     </div>
     
   </div>
@@ -13,14 +14,18 @@
     name: 'pd',
     data () {
       return {
-        
+        pickerVal:''
       }
     },
     components: {
       dataPicker
     },
     methods:{
-      
+      getVal:function(val){
+        console.log('点击确定');
+        console.log(val);
+        this.pickerVal=val.year+'-'+(val.month+1)+'-'+val.day;
+      }
     }
   }
 </script>
