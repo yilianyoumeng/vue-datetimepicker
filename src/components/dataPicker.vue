@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="bg">
 		<!--年月日-->
 		<div class="date_ctrl slideInUp">
 			<div class="date_btn_box">
