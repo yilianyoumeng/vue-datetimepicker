@@ -81,9 +81,9 @@ export default {
     maxDate:{
       default:function(){
         return{
-          yy:2020,
-          mm:1,//2月
-          dd:3
+          yy:0,
+          mm:0,//2月
+          dd:0
         }
         
       }
@@ -91,9 +91,9 @@ export default {
     minDate:{
       default:function(){
         return{
-          yy:2017,
-          mm:2,//3月
-          dd:1
+          yy:0,
+          mm:0,//3月
+          dd:0
         }
       }
     }

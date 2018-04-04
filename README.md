@@ -11,4 +11,9 @@ npm install --install dependencies
 ```bash
 npm run dev --serve with hot reload at localhost:8080
 ```
+prop:
+maxDate：最大日期 默认：2025-12-31
+minDate:最小日期 默认：2016-01-1
+inpClass:输入框样式
+type:年月日选择器：'datapicker' 时间选择器 :'timePicker' 年月日时分：’datetimePicker' 只有年月：'onlyYM'
 

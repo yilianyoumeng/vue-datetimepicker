@@ -1,11 +1,9 @@
 <template>
   <div class="formBox">
     <div class="input_box" >
-      <div class="label_div">选择原因</div>
-      <input type="text" v-model="pickerVal">
-      <data-picker @getVal='getVal'></data-picker>
+      <div class="label_div">选择原因{{pickerVal}}</div>
+      <data-picker v-model="pickerVal" type="datapicker" ></data-picker>
     </div>
-    
   </div>
 </template>
 <script>
@@ -14,18 +12,15 @@
     name: 'pd',
     data () {
       return {
-        pickerVal:''
+        pickerVal:'',
+        //maxDate:'2020-05-10'//自定义最大时间
       }
     },
     components: {
       dataPicker
     },
     methods:{
-      getVal:function(val){
-        console.log('点击确定');
-        console.log(val);
-        this.pickerVal=val.year+'-'+(val.month+1)+'-'+val.day;
-      }
+      
     }
   }
 </script>

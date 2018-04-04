@@ -1,5 +1,7 @@
 <template>
-	<div class="bg">
+<div class="datePickerBox">
+  <input type="text" :class="inpClass" v-model="pickerVal" @click="isPickerShow=true">
+	<div class="bg" v-if="isPickerShow">
 		<!--年月日-->
 		<div class="date_ctrl slideInUp">
 			<div class="date_btn_box">
@@ -8,13 +10,14 @@
 			</div>
 			<div class="date_roll_mask">
 				<div class="date_roll">
-          <data-pickerItem itemUnit='年' type="yy" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></data-pickerItem>
-          <data-pickerItem itemUnit='月' type="mm" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></data-pickerItem>
-          <data-pickerItem itemUnit='日' type="dd" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></data-pickerItem>
+          <data-pickerItem v-if="isShowY" itemUnit='年' type="yy" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></data-pickerItem>
+          <data-pickerItem v-if="isShowM" itemUnit='月' type="mm" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></data-pickerItem>
+          <data-pickerItem v-if="isShowD" itemUnit='日' type="dd" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></data-pickerItem>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 <script>
 import dataPickerItem from './dataPickerItem.vue';
@@ -24,6 +27,8 @@ export default {
   },
   data() {
     return {
+      pickerVal:'',
+      isPickerShow:false,
       year:0,
       month:-1,
       day:0,
@@ -32,28 +37,92 @@ export default {
       timestampD:0,
       topValM:0,
       addTopM:0,
-      timestampM:0
+      timestampM:0,
+      maxDateObj:{},
+      minDateObj:{},
+      isShowY:false,
+      isShowM:false,
+      isShowD:false,
+      isShowH:false,
+      isShowMi:false
     };
   },
   props: {
-    minY: {
-      default:2000
+    maxDate:{
+      default:'2025-12-31'
     },
-    minM: {
-      default:1
+    minDate:{
+      default:'2016-01-1'
     },
-    minD: {
-      default:1
+    inpClass:{
+      default:''
     },
-    maxY: {
-      default:2018
-    },
-    maxM: {
-      default:12
-    },
-    maxD: {
-      default:31
-    },
+    type:{
+      default:'datapicker'
+    } 
+  },
+  mounted: function () {
+    var maxDateArr=this.maxDate.split('-');
+    var minDateArr=this.minDate.split('-');
+    if(maxDateArr.length==2){//只有年月
+      this.maxDateObj.yy=parseInt(maxDateArr[0]);
+      this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
+      this.maxDateObj.dd=0;
+
+      this.minDateObj.yy=parseInt(minDateArr[0]);
+      this.minDateObj.mm=parseInt(minDateArr[1])-1;
+      this.minDateObj.dd=0;
+    }else if(maxDateArr.length==3){//年月日
+      this.maxDateObj.yy=parseInt(maxDateArr[0]);
+      this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
+      this.maxDateObj.dd=parseInt(maxDateArr[2]);
+
+      this.minDateObj.yy=parseInt(minDateArr[0]);
+      this.minDateObj.mm=parseInt(minDateArr[1])-1;
+      this.minDateObj.dd=parseInt(minDateArr[2]);
+    }else if(maxDateArr.length==5){//年月日时分
+      this.maxDateObj.yy=parseInt(maxDateArr[0]);
+      this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
+      this.maxDateObj.dd=parseInt(maxDateArr[2]);
+      this.maxDateObj.hh=parseInt(maxDateArr[3]);
+      this.maxDateObj.mi=parseInt(maxDateArr[4]);
+
+      this.minDateObj.yy=parseInt(minDateArr[0]);
+      this.minDateObj.mm=parseInt(minDateArr[1])-1;
+      this.minDateObj.dd=parseInt(minDateArr[2]);
+      this.minDateObj.hh=parseInt(minDateArr[3]);
+      this.minDateObj.mi=parseInt(minDateArr[4]);
+    }else{
+      alert('初始化请设置正确的日期格式');
+    }
+    //控件类型
+    if(this.type=="datapicker"){
+      this.isShowY=true;
+      this.isShowM=true;
+      this.isShowD=true;
+      this.isShowH=false;
+      this.isShowMi=false;
+    }else if(this.type=="timePicker"){
+      this.isShowY=false;
+      this.isShowM=false;
+      this.isShowD=false;
+      this.isShowH=true;
+      this.isShowMi=true;
+    }else if(this.type=="datetimePicker"){
+      this.isShowY=true;
+      this.isShowM=true;
+      this.isShowD=true;
+      this.isShowH=true;
+      this.isShowMi=true;
+    }else if(this.type=="onlyYM"){
+      this.isShowY=true;
+      this.isShowM=true;
+      this.isShowD=false;
+      this.isShowH=false;
+      this.isShowMi=false;
+    }else{
+       alert('初始化请设置正确的type');
+    }
   },
   methods: {
     getYear:function(val){
@@ -92,7 +161,9 @@ export default {
       if(this.day==0){
         this.day=new Date().getDate();
       }
-      this.$emit('getVal',{year:this.year,month:this.month,day:this.day})
+      this.pickerVal=this.year+'-'+this.month+'-'+this.day;
+      this.$emit('input',this.year+'-'+this.month+'-'+this.day);
+      this.isPickerShow=false;
     }
   }
 };
