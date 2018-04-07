@@ -64,7 +64,7 @@ export default {
   mounted: function () {
     var maxDateArr=this.maxDate.split('-');
     var minDateArr=this.minDate.split('-');
-    if(maxDateArr.length==2){//只有年月
+    if(this.type=="onlyYM"){//只有年月
       this.maxDateObj.yy=parseInt(maxDateArr[0]);
       this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
       this.maxDateObj.dd=0;
@@ -72,7 +72,7 @@ export default {
       this.minDateObj.yy=parseInt(minDateArr[0]);
       this.minDateObj.mm=parseInt(minDateArr[1])-1;
       this.minDateObj.dd=0;
-    }else if(maxDateArr.length==3){//年月日
+    }else if(this.type=="datapicker"){//年月日
       this.maxDateObj.yy=parseInt(maxDateArr[0]);
       this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
       this.maxDateObj.dd=parseInt(maxDateArr[2]);
@@ -80,7 +80,7 @@ export default {
       this.minDateObj.yy=parseInt(minDateArr[0]);
       this.minDateObj.mm=parseInt(minDateArr[1])-1;
       this.minDateObj.dd=parseInt(minDateArr[2]);
-    }else if(maxDateArr.length==5){//年月日时分
+    }else if(this.type=="datetimePicker"){//年月日时分
       this.maxDateObj.yy=parseInt(maxDateArr[0]);
       this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
       this.maxDateObj.dd=parseInt(maxDateArr[2]);
@@ -92,6 +92,8 @@ export default {
       this.minDateObj.dd=parseInt(minDateArr[2]);
       this.minDateObj.hh=parseInt(minDateArr[3]);
       this.minDateObj.mi=parseInt(minDateArr[4]);
+    }else if(this.type=="timePicker"){
+
     }else{
       alert('初始化请设置正确的日期格式');
     }
@@ -161,8 +163,18 @@ export default {
       if(this.day==0){
         this.day=new Date().getDate();
       }
-      this.pickerVal=this.year+'-'+this.month+'-'+this.day;
-      this.$emit('input',this.year+'-'+this.month+'-'+this.day);
+      
+      if(this.type=="datapicker"){
+        this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day;
+        
+      }else if(this.type=="timePicker"){
+
+      }else if(this.type=="datetimePicker"){
+        this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day+' '
+      }else if(this.type=="onlyYM"){
+        this.pickerVal=this.year+'-'+(this.month+1)
+      }
+      this.$emit('input',this.pickerVal);
       this.isPickerShow=false;
     }
   }
