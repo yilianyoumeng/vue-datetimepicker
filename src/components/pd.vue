@@ -2,7 +2,7 @@
   <div>
     <div>
       <div>{{pickerVal}}</div>
-      <data-picker v-model="pickerVal" inpClass="inp" type="datetimePicker" ></data-picker><!--datetimePicker onlyYM datapicker timePicker-->
+      <data-picker v-model="pickerVal" inpClass="inp" :maxDate="maxDate" :minDate="minDate" type="datapicker" ></data-picker><!--datetimePicker onlyYM datapicker timePicker-->
     </div>
   </div>
 </template>
@@ -13,7 +13,8 @@
     data () {
       return {
         pickerVal:'',
-        //maxDate:'2020-05-10'//自定义最大时间
+        maxDate:'2020-05-10',//自定义最大时间
+        minDate:'2019-06-09'
       }
     },
     components: {

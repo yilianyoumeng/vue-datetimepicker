@@ -3,15 +3,15 @@
 		<!--单个-->
 		<div ref="date_ctrl_div">
       <!--年-->
-			<div v-if="type=='yy'" class="gear date_yy" data-datetype="date_yy" :val="dateArr.yy" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="yy_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+			<div ref="gear" v-if="type=='yy'" class="gear date_yy" data-datetype="date_yy" :val="dateArr.yy" :top="top_val" :style="top_val_css" v-html="yy_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 			<!--月-->
-      <div v-if="type=='mm'" class="gear date_mm" data-datetype="date_mm" :val="dateArr.mm" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="mm_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='mm'" class="gear date_mm" data-datetype="date_mm" :val="dateArr.mm" :top="top_val" :style="top_val_css" v-html="mm_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
       <!--日-->
-      <div v-if="type=='dd'" class="gear date_dd" data-datetype="date_dd" :val="dateArr.dd" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="dd_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='dd'" class="gear date_dd" data-datetype="date_dd" :val="dateArr.dd" :top="top_val" :style="top_val_css" v-html="dd_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 			<!--时-->
-      <div v-if="type=='hh'" class="gear date_hh" data-datetype="date_hh" :val="dateArr.hh" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="hh_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='hh'" class="gear date_hh" data-datetype="date_hh" :val="dateArr.hh" :top="top_val" :style="top_val_css" v-html="hh_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
       <!--分-->
-      <div v-if="type=='mi'" class="gear date_mi" data-datetype="date_mi" :val="dateArr.mi" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="mi_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='mi'" class="gear date_mi" data-datetype="date_mi" :val="dateArr.mi" :top="top_val" :style="top_val_css" v-html="mi_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 
       <div class="date_grid">
 				<div>{{itemUnit}}</div>
@@ -38,6 +38,7 @@ export default {
 
       passY: 0,
       top_val: "0em",
+      top_val_css:'',
       top_mm: 0,
       top_dd: 0,
       yy_itemStr: "",
@@ -148,13 +149,13 @@ export default {
       if(this.type=='dd'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
         this.top_val=(top_val+this.addTopD)+'em';
+        this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         this.dateArr.dd=this.topValD;
         this.maxD=this.topValD;
         this.$emit('getVal',this.dateArr.dd);
       }
     },
     maxM:function(){
-      console.log('maxM你变了');
       var month;
       if(this.month==-1||this.type=='mm'){
           month=this.dateArr.mm;
@@ -171,7 +172,6 @@ export default {
       }
     },
     minM:function(){
-      console.log('minM你变了')
       var month;
       if(this.month==-1||this.type=='mm'){
           month=this.dateArr.mm;
@@ -191,6 +191,7 @@ export default {
       if(this.type=='mm'){
         var top_val = parseFloat(this.top_val.replace("em", ""));
         this.top_val=(top_val+this.addTopM)+'em';
+        this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         this.dateArr.mm=this.topValM;
         if(this.addTopM>0){
           this.maxM=this.topValM+1;
@@ -207,6 +208,15 @@ export default {
   methods: {
     dateTimeCtrlInit: function() {
       var that = this;
+      if(that.dateArr.yy<=that.minDate.yy){//当前年份小于最小年份
+        that.dateArr.yy=that.minDate.yy;
+        if(that.dateArr.mm<=that.minDate.mm){
+          that.dateArr.mm=that.minDate.mm;
+          if(that.dateArr.dd<=that.minDate.dd){
+            that.dateArr.dd=that.minDate.dd;
+          }
+        }
+      }
       that.setDateGearTooth();
     },
     //初始化
@@ -224,7 +234,15 @@ export default {
         that.yy_itemStr = itemStr;
 
         var top = Math.floor(parseFloat(that.top_val));
-        that.top_val = 8 - (yyVal - that.minY) * 2 + "em";
+        if(this.minY>yyVal){
+          that.dateArr.yy=this.minY;
+          that.top_val = 8 + "em";
+          that.top_val_css='-webkit-transform :translate3d(0,' + that.top_val + ',0)';
+        }else{
+          that.top_val = 8 - (yyVal - that.minY) * 2 + "em";
+          that.top_val_css='-webkit-transform :translate3d(0,' + that.top_val + ',0)';
+        }
+        
       } else if (this.type == "mm") {
         itemStr = "";
         that.passY = that.maxY - that.minY + 1;
@@ -239,6 +257,7 @@ export default {
         }
         //当年份到达最小值
         if (yyVal == 0) {
+          console.log(111);
           minM = that.minM - 1;
           //minM = that.minDate.mm - 1;
         }
@@ -255,6 +274,7 @@ export default {
           that.dateArr.mm = mmVal;
         }
         that.top_val = 8 - (mmVal - minM) * 2 + "em";
+        that.top_val_css='-webkit-transform :translate3d(0,' + that.top_val + ',0)';
       } else if (this.type == "dd") {
         itemStr = "";
 
@@ -285,6 +305,7 @@ export default {
           that.dateArr.dd = ddVal;
         }
         that.top_val = 8 - (ddVal - minD) * 2 + "em";
+        this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
       } else if (this.type == "hh") {
         itemStr = "";
 
@@ -297,6 +318,7 @@ export default {
 
         var top = Math.floor(parseFloat(that.top_val));
         that.top_val = 8 - (hhVal - that.minH) * 2 + "em";
+        this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
       }else if (this.type == "mi") {
         itemStr = "";
 
@@ -309,6 +331,7 @@ export default {
 
         var top = Math.floor(parseFloat(that.top_val));
         that.top_val = 8 - (miVal - that.minMi) * 2 + "em";
+        this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
       }
     },
     //求月份最大天数
@@ -369,8 +392,8 @@ export default {
       let a = 1.8;
       /* 设置css */
       if (time <= 300) {
-        move = v * a * time;
-        time = 1000 + time * a;
+        //move = v * a * time;
+        time = 500 + time * a;
         this.setStyle(move, "end", time);
       } else {
         this.setStyle(move, "end");
@@ -389,6 +412,7 @@ export default {
       }
     },
     setStyle: function(move, type, time) {
+      console.log(this.type);
       var fontS = parseInt(
         window.getComputedStyle(this.$refs.date_ctrl_div).fontSize
       );
@@ -412,48 +436,57 @@ export default {
       }else if(this.type == "mi"){
         heightMin = heightMax-(this.maxMi)*2;
         heightMax = 8;
-        console.log(heightMax)
       }
 
-      //set top_val
+      //set val
       var top_val = parseFloat(this.top_val.replace("em", ""));
       if (type == "end") {
         if (top_val >= heightMax) {
           this.top_val = heightMax + "em";
+          this.top_val_css='transition: transform '+time+'ms ease-out;'+'-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         }else if(top_val <= heightMin){
           this.top_val = heightMin + "em";
+          this.top_val_css='transition: transform '+time+'ms ease-out;'+'-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         }else {
           top_val = Math.ceil(top_val);
           if (top_val % 2 != 0) {
             top_val = top_val + 1;
           }
           this.top_val = top_val + "em";
+          this.top_val_css='transition: transform '+time+'ms ease-out;'+'-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         }
       } else {
         if (top_val > heightMin && top_val < heightMax) {
           this.top_val = move + top_val + "em";
+          this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         } else if (top_val < heightMin) {
           this.top_val = heightMin + "em";
+          this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         } else if (top_val > heightMax) {
          
           this.top_val = heightMax + "em";
+          this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
         } else if (top_val == heightMin) {
           
           if (move + top_val > heightMin) {
             
             this.top_val = move + top_val + "em";
+            this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
           } else {
             
             this.top_val = heightMin + "em";
+            this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
           }
         } else if (top_val == heightMax) {
           
           if (move + top_val < heightMax) {
             
             this.top_val = move + top_val + "em";
+            this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
           } else {
             
             this.top_val = heightMax + "em";
+            this.top_val_css='-webkit-transform :translate3d(0,' + this.top_val + ',0)';
           }
         }
       }
@@ -487,7 +520,6 @@ export default {
         for (var k = this.minMi; k <= this.maxMi; k++) {
           array.push(k);
         }
-        console.log(array);
         i = Math.abs(top_val - heightMax) / 2;
         this.dateArr.mi = array[i];
       }
