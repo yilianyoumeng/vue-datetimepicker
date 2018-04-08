@@ -11,7 +11,7 @@ npm install --install dependencies
 ```bash
 npm run dev --serve with hot reload at localhost:8080
 ```
-prop:
+##prop:##
 |属性      |  描述                         |
 | -------- | -----:                       |
 | maxDate  | 最大日期 默认：2025-12-31     |
