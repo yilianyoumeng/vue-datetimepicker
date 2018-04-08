@@ -8,7 +8,12 @@
       <div v-if="type=='mm'" class="gear date_mm" data-datetype="date_mm" :val="dateArr.mm" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="mm_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
       <!--日-->
       <div v-if="type=='dd'" class="gear date_dd" data-datetype="date_dd" :val="dateArr.dd" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="dd_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
-			<div class="date_grid">
+			<!--时-->
+      <div v-if="type=='hh'" class="gear date_hh" data-datetype="date_hh" :val="dateArr.hh" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="hh_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <!--分-->
+      <div v-if="type=='mi'" class="gear date_mi" data-datetype="date_mi" :val="dateArr.mi" :top="top_val" :style="'-webkit-transform :translate3d(0,' + top_val + ',0)'" v-html="mi_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+
+      <div class="date_grid">
 				<div>{{itemUnit}}</div>
 			</div>
 		</div>
@@ -26,7 +31,11 @@ export default {
       maxY: this.maxDate.yy,
       maxM: 12,
       maxD: 31,
-      
+      maxH:24,
+      minH:1,
+      maxMi:60,
+      minMi:0,
+
       passY: 0,
       top_val: "0em",
       top_mm: 0,
@@ -34,6 +43,8 @@ export default {
       yy_itemStr: "",
       mm_itemStr: "",
       dd_itemStr: "",
+      hh_itemStr:"",
+      mi_itemStr:"",
       dateArr: {
         yy: new Date().getFullYear(),
         mm: new Date().getMonth(),
@@ -274,6 +285,30 @@ export default {
           that.dateArr.dd = ddVal;
         }
         that.top_val = 8 - (ddVal - minD) * 2 + "em";
+      } else if (this.type == "hh") {
+        itemStr = "";
+
+        //得到时间的值
+        var hhVal = parseInt(that.dateArr.hh);
+        for (var p = 0; p <= that.maxH - 1; p++) {
+          itemStr += "<div class='tooth'>" + (that.minH + p) + "</div>";
+        }
+        that.hh_itemStr = itemStr;
+
+        var top = Math.floor(parseFloat(that.top_val));
+        that.top_val = 8 - (hhVal - that.minH) * 2 + "em";
+      }else if (this.type == "mi") {
+        itemStr = "";
+
+        //得到时间的值
+        var miVal = parseInt(that.dateArr.mi);
+        for (var p = 0; p <= that.maxMi; p++) {
+          itemStr += "<div class='tooth'>" + (that.minMi + p) + "</div>";
+        }
+        that.mi_itemStr = itemStr;
+
+        var top = Math.floor(parseFloat(that.top_val));
+        that.top_val = 8 - (miVal - that.minMi) * 2 + "em";
       }
     },
     //求月份最大天数
@@ -347,6 +382,10 @@ export default {
         this.$emit('getVal',this.dateArr.mm);
       }else if(this.type=='dd'){
         this.$emit('getVal',this.dateArr.dd);
+      }else if(this.type=='hh'){
+        this.$emit('getVal',this.dateArr.hh);
+      }else if(this.type=='mi'){
+        this.$emit('getVal',this.dateArr.mi);
       }
     },
     setStyle: function(move, type, time) {
@@ -358,7 +397,7 @@ export default {
       var heightMax = 8;
       var heightMin = 0;
 
-      //判断是年月日
+      //计算最大高度和最小高度
       if (this.type == "yy") {
         heightMin = 8-(this.maxY - this.minY)*2;
       } else if (this.type == "mm") {
@@ -367,6 +406,13 @@ export default {
       }else if(this.type == "dd"){
         heightMin = heightMax-(this.maxD-1)*2;
         heightMax = 8-(this.minD-1)*2;
+      }else if(this.type == "hh"){
+        heightMin = heightMax-(this.maxH-1)*2;
+        heightMax = 8-(this.minH-1)*2;
+      }else if(this.type == "mi"){
+        heightMin = heightMax-(this.maxMi)*2;
+        heightMax = 8;
+        console.log(heightMax)
       }
 
       //set top_val
@@ -431,6 +477,19 @@ export default {
         }
         i = Math.abs(top_val - heightMax) / 2;
         this.dateArr.dd = array[i];
+      }else if(this.type=='hh'){
+        for (var k = this.minH; k <= this.maxH; k++) {
+          array.push(k);
+        }
+        i = Math.abs(top_val - heightMax) / 2;
+        this.dateArr.hh = array[i];
+      }else if(this.type=='mi'){
+        for (var k = this.minMi; k <= this.maxMi; k++) {
+          array.push(k);
+        }
+        console.log(array);
+        i = Math.abs(top_val - heightMax) / 2;
+        this.dateArr.mi = array[i];
       }
       
       //日期最大最小值

@@ -2,7 +2,7 @@
   <div>
     <div>
       <div>{{pickerVal}}</div>
-      <data-picker v-model="pickerVal" inpClass="inp" type="onlyYM" ></data-picker>
+      <data-picker v-model="pickerVal" inpClass="inp" type="datetimePicker" ></data-picker><!--datetimePicker onlyYM datapicker timePicker-->
     </div>
   </div>
 </template>

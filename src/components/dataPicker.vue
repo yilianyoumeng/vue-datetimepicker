@@ -9,10 +9,12 @@
 				<div class="date_btn lcalendar_finish" @click="yesFn">确定</div>
 			</div>
 			<div class="date_roll_mask">
-				<div class="date_roll">
+				<div :class="this.type+' date_roll'">
           <data-pickerItem v-if="isShowY" itemUnit='年' type="yy" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></data-pickerItem>
           <data-pickerItem v-if="isShowM" itemUnit='月' type="mm" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></data-pickerItem>
           <data-pickerItem v-if="isShowD" itemUnit='日' type="dd" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></data-pickerItem>
+          <data-pickerItem v-if="isShowH" itemUnit='时' type="hh" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getHour" :topValD="topValD" :addTopD="addTopD"></data-pickerItem>
+          <data-pickerItem v-if="isShowMi" itemUnit='分' type="mi" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getSecond" :topValD="topValD" :addTopD="addTopD"></data-pickerItem>
 				</div>
 			</div>
 		</div>
@@ -32,9 +34,11 @@ export default {
       year:0,
       month:-1,
       day:0,
+      hour:0,
+      second:0,
       topValD:0,
       addTopD:0,
-      timestampD:0,
+      timestampD:0,//时间戳
       topValM:0,
       addTopM:0,
       timestampM:0,
@@ -93,7 +97,11 @@ export default {
       this.minDateObj.hh=parseInt(minDateArr[3]);
       this.minDateObj.mi=parseInt(minDateArr[4]);
     }else if(this.type=="timePicker"){
+      this.maxDateObj.hh=parseInt(maxDateArr[3]);
+      this.maxDateObj.mi=parseInt(maxDateArr[4]);
 
+      this.minDateObj.hh=parseInt(minDateArr[3]);
+      this.minDateObj.mi=parseInt(minDateArr[4]);
     }else{
       alert('初始化请设置正确的日期格式');
     }
@@ -136,6 +144,12 @@ export default {
     getDay:function(val){
       this.day=val;
     },
+    getHour:function(val){
+      this.hour=val;
+    },
+    getSecond:function(val){
+      this.second=val;
+    },
     getTopD:function(val){
       if(val!=undefined){
         this.topValD=val[0];
@@ -152,6 +166,7 @@ export default {
       }
       
     },
+    
     //点击确定
     yesFn:function(){
       if(this.year==0){
@@ -163,14 +178,20 @@ export default {
       if(this.day==0){
         this.day=new Date().getDate();
       }
+      if(this.hour==0){
+        this.hour= new Date().getHours();
+      }
+      if(this.second==0){
+        this.second= new Date().getMinutes();
+      }
       
       if(this.type=="datapicker"){
         this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day;
         
       }else if(this.type=="timePicker"){
-
+        this.pickerVal=this.hour+'-'+this.second
       }else if(this.type=="datetimePicker"){
-        this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day+' '
+        this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day+' '+this.hour+':'+this.second
       }else if(this.type=="onlyYM"){
         this.pickerVal=this.year+'-'+(this.month+1)
       }
