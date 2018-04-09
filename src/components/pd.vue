@@ -13,8 +13,8 @@
     data () {
       return {
         pickerVal:'',
-        maxDate:'2020-05-10',//自定义最大时间
-        minDate:'2019-06-09'
+        maxDate:'2010-05-10',//自定义最大时间
+        minDate:'1992-07-20'
       }
     },
     components: {

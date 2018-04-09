@@ -217,6 +217,15 @@ export default {
           }
         }
       }
+      if(that.dateArr.yy>=that.maxDate.yy){//当前年份大于最大年份
+        that.dateArr.yy=that.maxDate.yy;
+        if(that.dateArr.mm<=that.maxDate.mm){
+          that.dateArr.mm=that.maxDate.mm;
+          if(that.dateArr.dd<=that.maxDate.dd){
+            that.dateArr.dd=that.maxDate.dd;
+          }
+        }
+      }
       that.setDateGearTooth();
     },
     //初始化
