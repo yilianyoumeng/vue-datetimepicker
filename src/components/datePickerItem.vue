@@ -3,15 +3,15 @@
 		<!--单个-->
 		<div ref="date_ctrl_div">
       <!--年-->
-			<div ref="gear" v-if="type=='yy'" class="gear date_yy" data-datetype="date_yy" :val="dateArr.yy" :top="top_val" :style="top_val_css" v-html="yy_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+			<div ref="gear" v-if="type=='yy'" class="gear date_yy" date-datetype="date_yy" :val="dateArr.yy" :top="top_val" :style="top_val_css" v-html="yy_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 			<!--月-->
-      <div v-if="type=='mm'" class="gear date_mm" data-datetype="date_mm" :val="dateArr.mm" :top="top_val" :style="top_val_css" v-html="mm_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='mm'" class="gear date_mm" date-datetype="date_mm" :val="dateArr.mm" :top="top_val" :style="top_val_css" v-html="mm_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
       <!--日-->
-      <div v-if="type=='dd'" class="gear date_dd" data-datetype="date_dd" :val="dateArr.dd" :top="top_val" :style="top_val_css" v-html="dd_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='dd'" class="gear date_dd" date-datetype="date_dd" :val="dateArr.dd" :top="top_val" :style="top_val_css" v-html="dd_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 			<!--时-->
-      <div v-if="type=='hh'" class="gear date_hh" data-datetype="date_hh" :val="dateArr.hh" :top="top_val" :style="top_val_css" v-html="hh_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='hh'" class="gear date_hh" date-datetype="date_hh" :val="dateArr.hh" :top="top_val" :style="top_val_css" v-html="hh_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
       <!--分-->
-      <div v-if="type=='mi'" class="gear date_mi" data-datetype="date_mi" :val="dateArr.mi" :top="top_val" :style="top_val_css" v-html="mi_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
+      <div v-if="type=='mi'" class="gear date_mi" date-datetype="date_mi" :val="dateArr.mi" :top="top_val" :style="top_val_css" v-html="mi_itemStr" @touchstart="gearTouchStart" @touchmove="gearTouchMove" @touchend="gearTouchEnd"></div>
 
       <div class="date_grid">
 				<div>{{itemUnit}}</div>
@@ -20,11 +20,11 @@
 	</div>
 </template>
 <script>
-import "../dataPicker.less";
+import "../datePicker.less";
 export default {
   data() {
     return {
-      dataVal: "", //日期时间的值
+      dateVal: "", //日期时间的值
       minY: this.minDate.yy,
       minM: 1,
       minD: 1,

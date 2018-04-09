@@ -2,12 +2,12 @@
   <div>
     <div>
       <div>{{pickerVal}}</div>
-      <data-picker v-model="pickerVal" inpClass="inp" :maxDate="maxDate" :minDate="minDate" type="datapicker" ></data-picker><!--datetimePicker onlyYM datapicker timePicker-->
+      <date-picker v-model="pickerVal" inpClass="inp" :maxDate="maxDate" :minDate="minDate" type="datepicker" ></date-picker><!--datetimePicker onlyYM datepicker timePicker-->
     </div>
   </div>
 </template>
 <script>
-  import dataPicker from './dataPicker.vue'
+  import datePicker from './datePicker.vue'
   export default{
     name: 'pd',
     data () {
@@ -18,7 +18,7 @@
       }
     },
     components: {
-      dataPicker
+      datePicker
     },
     methods:{
       

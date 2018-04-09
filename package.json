@@ -1,8 +1,7 @@
 {
-  "name": "selectNormal",
+  "name": "datepicker",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "node build/build.js",
     "dev": "node build/dev-server.js"
@@ -11,8 +10,6 @@
   "author": "yilianyoumeng <1329395802@qq.com>",
   "license": "ISC",
   "dependencies": {
-    "node-sass": "^4.5.2",
-    "sass-loader": "^6.0.3",
     "vue": "^2.2.6",
     "less": "^2.7.1",
     "less-loader": "^2.2.3"

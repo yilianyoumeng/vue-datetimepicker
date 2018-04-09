@@ -10,11 +10,11 @@
 			</div>
 			<div class="date_roll_mask">
 				<div :class="this.type+' date_roll'">
-          <data-pickerItem v-if="isShowY" itemUnit='年' type="yy" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></data-pickerItem>
-          <data-pickerItem v-if="isShowM" itemUnit='月' type="mm" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></data-pickerItem>
-          <data-pickerItem v-if="isShowD" itemUnit='日' type="dd" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></data-pickerItem>
-          <data-pickerItem v-if="isShowH" itemUnit='时' type="hh" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getHour" :topValD="topValD" :addTopD="addTopD"></data-pickerItem>
-          <data-pickerItem v-if="isShowMi" itemUnit='分' type="mi" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getSecond" :topValD="topValD" :addTopD="addTopD"></data-pickerItem>
+          <date-pickerItem v-if="isShowY" itemUnit='年' type="yy" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getYear" @getTopD="getTopD" @getTopM="getTopM" :month="month" :day="day"></date-pickerItem>
+          <date-pickerItem v-if="isShowM" itemUnit='月' type="mm" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getMonth" @getTopD="getTopD" :year="year" :day="day" :topValM="topValM" :addTopM="addTopM" :timestampM="timestampM"></date-pickerItem>
+          <date-pickerItem v-if="isShowD" itemUnit='日' type="dd" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getDay" :year="year" :month="month" :topValD="topValD" :addTopD="addTopD" :timestampD="timestampD"></date-pickerItem>
+          <date-pickerItem v-if="isShowH" itemUnit='时' type="hh" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getHour" :topValD="topValD" :addTopD="addTopD"></date-pickerItem>
+          <date-pickerItem v-if="isShowMi" itemUnit='分' type="mi" :maxDate="maxDateObj" :minDate="minDateObj" @getVal="getSecond" :topValD="topValD" :addTopD="addTopD"></date-pickerItem>
 				</div>
 			</div>
 		</div>
@@ -22,10 +22,10 @@
 </div>
 </template>
 <script>
-import dataPickerItem from './dataPickerItem.vue';
+import datePickerItem from './datePickerItem.vue';
 export default {
   components: {
-    dataPickerItem
+    datePickerItem
   },
   data() {
     return {
@@ -62,7 +62,7 @@ export default {
       default:''
     },
     type:{
-      default:'datapicker'
+      default:'datepicker'
     } 
   },
   mounted: function () {
@@ -76,7 +76,7 @@ export default {
       this.minDateObj.yy=parseInt(minDateArr[0]);
       this.minDateObj.mm=parseInt(minDateArr[1])-1;
       this.minDateObj.dd=0;
-    }else if(this.type=="datapicker"){//年月日
+    }else if(this.type=="datepicker"){//年月日
       this.maxDateObj.yy=parseInt(maxDateArr[0]);
       this.maxDateObj.mm=parseInt(maxDateArr[1])-1;
       this.maxDateObj.dd=parseInt(maxDateArr[2]);
@@ -106,7 +106,7 @@ export default {
       alert('初始化请设置正确的日期格式');
     }
     //控件类型
-    if(this.type=="datapicker"){
+    if(this.type=="datepicker"){
       this.isShowY=true;
       this.isShowM=true;
       this.isShowD=true;
@@ -185,7 +185,7 @@ export default {
         this.second= new Date().getMinutes();
       }
       
-      if(this.type=="datapicker"){
+      if(this.type=="datepicker"){
         this.pickerVal=this.year+'-'+(this.month+1)+'-'+this.day;
         
       }else if(this.type=="timePicker"){
