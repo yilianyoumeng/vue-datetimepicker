@@ -14,12 +14,12 @@ npm install --install dependencies
 ```bash
 npm run dev --serve with hot reload at localhost:8080
 ```
-##使用##
+## 使用
 
     <data-picker v-model="pickerVal"></data-picker>
     
 
-##prop:##
+## prop:
 
 |属性      |  描述                         |
 | -------- | :----------:                       |
