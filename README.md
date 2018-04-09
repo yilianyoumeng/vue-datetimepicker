@@ -26,4 +26,4 @@ npm run dev --serve with hot reload at localhost:8080
 | maxDate  | 最大日期 默认：2025-12-31     |
 | minDate  | 最小日期 默认：2016-01-1      |
 | inpClass | 输入框样式class               |
-| type     | 1.年月日选择器--'datapicker';2.时间选择器--'timePicker';3.年月日时分--'datetimePicker';4.只有年 --'onlyYM' |
+| type     | 1.年月日选择器--'datepicker';2.时间选择器--'timePicker';3.年月日时分--'datetimePicker';4.只有年 --'onlyYM' |
