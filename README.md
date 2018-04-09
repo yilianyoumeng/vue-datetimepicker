@@ -3,6 +3,8 @@
 
 <a href="https://yilianyoumeng.github.io/vue-timepicker/index.html">demo</a>
 
+> 必须在移动端才有效果哦
+
 
 # 安装及使用
 
